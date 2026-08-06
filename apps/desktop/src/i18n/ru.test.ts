@@ -65,6 +65,10 @@ describe('Russian locale', () => {
     expect(ru.assistant.thread.filesChanged(2)).toBe('2 файла изменены')
     expect(ru.assistant.thread.filesChanged(11)).toBe('11 файлов изменено')
     expect(ru.assistant.thread.filesChanged(21)).toBe('21 файл изменён')
+    expect(ru.zones.tabCount(1)).toBe('1 вкладка')
+    expect(ru.zones.tabCount(2)).toBe('2 вкладки')
+    expect(ru.zones.tabCount(5)).toBe('5 вкладок')
+    expect(ru.zones.tabCount(21)).toBe('21 вкладка')
   })
 
   it('keeps pending actions compatible with their rendered status', () => {

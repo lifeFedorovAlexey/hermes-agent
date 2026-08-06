@@ -157,6 +157,7 @@ export const ruOverrides = {
     errors: {
       elevenLabsNeedsKey: 'Для STT ElevenLabs нужен ELEVENLABS_API_KEY.',
       elevenLabsRejectedKey: 'ElevenLabs отклонил API-ключ (401).',
+      diskFull: 'Диск заполнен — освободите место и повторите попытку.',
       gatewayAuthFailed: 'Ошибка аутентификации на шлюзе. Проверьте API_SERVER_KEY.',
       methodNotAllowed:
         'Бэкенд десктопа отклонил запрос (405 Method Not Allowed). Попробуйте перезапустить Hermes Desktop.',
@@ -421,6 +422,10 @@ export const ruOverrides = {
         credits: {
           label: 'Уведомления о кредитах',
           description: 'Сообщать, когда доступ к кредитам приостановлен или восстановлен.'
+        },
+        plugin: {
+          label: 'Уведомления плагинов',
+          description: 'Сообщать, когда плагин десктопа отправляет уведомление во время фоновой работы Hermes.'
         }
       },
       test: 'Тест',
@@ -468,6 +473,12 @@ export const ruOverrides = {
       uiScaleTitle: 'Масштаб интерфейса',
       uiScaleDesc: (percent: number) =>
         `Изменяет размер текста и элементов управления во всём приложении. Также доступны сочетания Cmd/Ctrl с +, − и 0. Текущий масштаб: ${percent}%.`,
+      terminalFontTitle: 'Шрифт терминала',
+      terminalFontDesc:
+        'Выберите установленный шрифт для терминалов. Nerd Fonts отображают значки Powerlevel10k и командной оболочки; оставьте поле пустым, чтобы использовать встроенный JetBrains Mono.',
+      terminalFontPlaceholder: 'MesloLGS NF или стек CSS-шрифтов',
+      terminalFontPreview: 'Предпросмотр символов',
+      terminalFontReset: 'Использовать по умолчанию',
       translucencyTitle: 'Прозрачность',
       translucencyDesc: 'Позволяет видеть рабочий стол через всё окно. Доступно только в macOS и Windows.',
       backdropTitle: 'Фон чата',
@@ -750,6 +761,9 @@ export const ruOverrides = {
       sshHermesPathDesc:
         'Полный путь к исполняемому файлу hermes на удалённом хосте. Если оставить поле пустым, путь будет определён автоматически.',
       sshHermesPathPlaceholder: 'определяется автоматически',
+      sshRemoteProfileTitle: 'Удалённый профиль (необязательно)',
+      sshRemoteProfileDesc:
+        'Имя профиля на удалённом хосте. Если оставить поле пустым, будет использовано имя профиля десктопа.',
       sshTestConnection: 'Проверить подключение по SSH',
       sshConnect: 'Подключиться',
       sshButtonsHint:
@@ -1618,6 +1632,12 @@ export const ruOverrides = {
     search: 'Поиск профилей…',
     loading: 'Загрузка профилей…',
     newProfile: 'Новый профиль',
+    importProfile: 'Импортировать профиль…',
+    exportProfile: 'Экспортировать профиль…',
+    imported: 'Профиль импортирован',
+    exported: 'Профиль экспортирован',
+    failedImport: 'Не удалось импортировать профиль',
+    failedExport: 'Не удалось экспортировать профиль',
     allProfiles: 'Все профили',
     showAllProfiles: 'Показать все профили',
     switchToProfile: name => `Переключиться на ${name}`,
@@ -1933,6 +1953,11 @@ export const ruOverrides = {
       menuAddFolder: 'Добавить папку',
       menuSetActive: 'Сделать активным',
       menuDelete: 'Удалить',
+      moveToProject: 'Переместить в проект',
+      movedTo: name => `Сессия перемещена в проект «${name}»`,
+      moveFailed: 'Не удалось переместить сессию',
+      moveNoFolder: 'У этого проекта нет папки для перемещения',
+      moveNoProjects: 'Других проектов нет',
       reveal: 'Показать в папке',
       copyPath: 'Копировать путь',
       removeFromSidebar: 'Скрыть из боковой панели',
@@ -1948,6 +1973,9 @@ export const ruOverrides = {
       baseBranchPlaceholder: 'Поиск веток…',
       baseBranchNone: 'Ветки не найдены',
       startWorkFailed: 'Не удалось создать рабочее дерево',
+      worktreeProjectLabel: 'Проект',
+      worktreeProjectPlaceholder: 'Поиск проектов…',
+      worktreeProjectNone: 'Нет проектов с папкой',
       convertBranch: 'Преобразовать ветку…',
       convertBranchTitle: 'Преобразовать ветку',
       convertBranchDesc:
@@ -1957,6 +1985,7 @@ export const ruOverrides = {
       branchOpenExisting: 'открыть',
       branchSwitchHome: 'переключить основное рабочее дерево',
       branchCreateWorktree: 'новое рабочее дерево',
+      branchTrackRemote: 'отслеживать удалённую ветку',
       branchesLoading: 'Загрузка веток…',
       noBranches: 'Ветки не найдены',
       removeWorktree: 'Удалить рабочее дерево',
@@ -2042,6 +2071,7 @@ export const ruOverrides = {
       'Скорректировать или продолжить'
     ],
     startVoice: 'Начать голосовой разговор',
+    openDirective: 'Открыть',
     queueMessage: 'Поставить сообщение в очередь',
     steer: 'Скорректировать текущий ход (⌘⏎)',
     stop: 'Остановить',
@@ -2632,10 +2662,6 @@ export const ruOverrides = {
 
   preview: {
     tab: 'Предпросмотр',
-    closeTab: label => `Закрыть ${label}`,
-    closeOthers: 'Закрыть остальные',
-    closeToRight: 'Закрыть справа',
-    closeAll: 'Закрыть все',
     closePane: 'Закрыть панель предпросмотра',
     loading: 'Загрузка предпросмотра…',
     unavailable: 'Предпросмотр недоступен',
@@ -2735,6 +2761,7 @@ export const ruOverrides = {
     closeRunningBody:
       'В чате ещё выполняется задача или ожидается ваш ответ. Вкладка будет скрыта, но сессия сохранит прогресс: её можно снова открыть на боковой панели.',
     closeRunningConfirm: 'Закрыть вкладку',
+    reload: 'Перезагрузить',
     closeOthers: 'Закрыть остальные',
     closeToRight: 'Закрыть справа',
     closeAll: 'Закрыть все',
@@ -2766,7 +2793,8 @@ export const ruOverrides = {
     layoutNamePlaceholder: fallback => `Название макета (${fallback})`,
     saveApply: 'Сохранить и применить',
     notExpressible: 'зоны в этом макете перекрываются; представить его вложенными разделениями пока нельзя',
-    zoneCount: count => countRu(count, 'зона', 'зоны', 'зон')
+    zoneCount: count => countRu(count, 'зона', 'зоны', 'зон'),
+    tabCount: count => countRu(count, 'вкладка', 'вкладки', 'вкладок')
   },
 
   assistant: {
